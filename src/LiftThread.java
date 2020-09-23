@@ -45,7 +45,6 @@ public class LiftThread extends Thread{
                 liftView.moveLift(floor,nextFloor);
                 liftData.setFloor(nextFloor);
                 System.out.println(liftData.getFloor());
-                liftData.print();
         }
 
     }

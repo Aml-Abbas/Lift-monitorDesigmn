@@ -155,10 +155,5 @@ public class LiftData {
         this.entering= b;
         notifyAll();
     }
-    public void print(){
-        for (Map.Entry<Integer,Integer> i: waitExit.entrySet()){
-            System.out.println(i.getKey()+" "+i.getValue());
-        }
 
-    }
 }
