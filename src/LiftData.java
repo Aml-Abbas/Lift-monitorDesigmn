@@ -94,6 +94,7 @@ public class LiftData {
         }else {
             waitEntry.put(startFloor,numberOfWaiting+1);
         }
+        notifyAll();
     }
 
     public synchronized void removeFromWaitEntry(int startFloor) {
@@ -105,6 +106,7 @@ public class LiftData {
         }else {
             waitEntry.put(startFloor,numberOfWaiting);
         }
+        notifyAll();
     }
 
     public synchronized void addToWaitExit(int destinationFloor) {
@@ -115,6 +117,7 @@ public class LiftData {
         }else {
             waitExit.put(destinationFloor,numberOfExiting+1);
         }
+        notifyAll();
     }
 
     public synchronized void removeFromWaitExit(int destinationFloor) {
@@ -125,6 +128,7 @@ public class LiftData {
         }else {
             waitExit.put(destinationFloor,numberOfExiting);
         }
+        notifyAll();
     }
 
     public synchronized boolean shouldOpen(int floor){
@@ -134,9 +138,10 @@ public class LiftData {
         return true;
     }
 
-    public synchronized boolean shouldStop(){
-
-        return waitEntry.size()==0 && waitExit.size()==0;
+    public synchronized void shouldStop() throws InterruptedException {
+        while (waitEntry.size()==0 && waitExit.size()==0){
+            wait();
+        }
     }
 
     public synchronized boolean canCloseDoors() throws InterruptedException {
@@ -149,5 +154,11 @@ public class LiftData {
     public synchronized void setEntering(boolean b) {
         this.entering= b;
         notifyAll();
+    }
+    public void print(){
+        for (Map.Entry<Integer,Integer> i: waitExit.entrySet()){
+            System.out.println(i.getKey()+" "+i.getValue());
+        }
+
     }
 }

@@ -18,8 +18,8 @@ public class LiftThread extends Thread{
                 int floor= liftData.getFloor();
                 System.out.println(floor+" -> " + nextFloor);
                 liftData.setMoving(true);
-            if (!liftData.shouldStop()){
-                if (liftData.shouldOpen(floor)){
+
+            if (liftData.shouldOpen(floor)){
                     liftView.openDoors(floor);
                     liftData.setMoving(false);
                     try {
@@ -36,14 +36,16 @@ public class LiftThread extends Thread{
                         e.printStackTrace();
                     }
                 }
-
+            try {
+                liftData.shouldStop();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
                 liftData.setMoving(true);
                 liftView.moveLift(floor,nextFloor);
                 liftData.setFloor(nextFloor);
                 System.out.println(liftData.getFloor());
-
-            }
-
+                liftData.print();
         }
 
     }

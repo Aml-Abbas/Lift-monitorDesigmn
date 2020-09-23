@@ -9,7 +9,7 @@ public class ManyPersonsRidesLift {
         LiftThread liftThread= new LiftThread(liftView, liftData);
         liftThread.start();
 
-        for (int i=0; i<20;i++){
+        for (int i=0; i<2;i++){
             PassengerTread passengerThread= new PassengerTread(liftData, liftView);
             passengerThread.start();
         }
