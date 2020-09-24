@@ -10,14 +10,12 @@ public class LiftData {
     private boolean moving;
     private Map<Integer, Integer> waitEntry;
     private Map<Integer, Integer> waitExit;
-    private boolean entering;
+    private int entering;
+    private int exiting;
+
 
     public LiftData(){
-        this.floor=0;
         this.direction=1;
-        this.load=0;
-        this.moving= false;
-        this.entering= false;
         this.waitEntry= new HashMap<>();
         this.waitExit= new HashMap<>();
     }
@@ -65,14 +63,14 @@ public class LiftData {
 
     public synchronized boolean canEnterFloor(Passenger passenger) throws InterruptedException {
         addToWaitEntry(passenger.getStartFloor());
-        while ( !(passenger.getStartFloor()==floor && load<4 && moving ==false) ){
+        while ( !(passenger.getStartFloor()==floor && load<4 && moving ==false) ) {
             wait();
         }
         setMoving(false);
-
+        entering++;
         removeFromWaitEntry(passenger.getStartFloor());
         increaseLoad();
-        entering=true;
+        notifyAll();
         return true;
     }
 
@@ -81,6 +79,7 @@ public class LiftData {
         while ( !(passenger.getDestinationFloor()==floor && moving ==false) ){
             wait();
         }
+        exiting++;
         removeFromWaitExit(passenger.getDestinationFloor());
         decreaseLoad();
         return true;
@@ -144,16 +143,21 @@ public class LiftData {
         }
     }
 
-    public synchronized boolean canCloseDoors() throws InterruptedException {
-        while (entering==true){
+    public synchronized boolean canCloseDoors(int floor) throws InterruptedException {
+        while (entering>0 || shouldOpen(floor) || exiting>0){
             wait();
         }
+        setMoving(true);
         return true;
     }
 
-    public synchronized void setEntering(boolean b) {
-        this.entering= b;
+    public synchronized void decreaseEntering() {
+        entering--;
         notifyAll();
     }
 
+    public synchronized void decreaseExiting() {
+        exiting--;
+        notifyAll();
+    }
 }

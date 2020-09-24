@@ -22,14 +22,9 @@ public class LiftThread extends Thread{
             if (liftData.shouldOpen(floor)){
                     liftView.openDoors(floor);
                     liftData.setMoving(false);
+
                     try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    liftData.setMoving(true);
-                    try {
-                        if (liftData.canCloseDoors()){
+                        if (liftData.canCloseDoors(floor)){
                             liftView.closeDoors();
                         }
                     } catch (InterruptedException e) {

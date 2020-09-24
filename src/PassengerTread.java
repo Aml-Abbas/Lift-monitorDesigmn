@@ -27,8 +27,8 @@ public class PassengerTread extends Thread {
             passenger.begin();
             try {
                 if (liftData.canEnterFloor(passenger)){
-                    passenger.enterLift();  // får fel när hissen precis börjar flytta
-                    liftData.setEntering(false);
+                    passenger.enterLift();
+                    liftData.decreaseEntering();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -37,6 +37,7 @@ public class PassengerTread extends Thread {
             try {
                 if (liftData.canExitFloor(passenger)){
                     passenger.exitLift();
+                    liftData.decreaseExiting();
                 }
 
                 passenger.end();
